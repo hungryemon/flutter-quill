@@ -14,8 +14,6 @@ import '../shims/dart_ui_fake.dart'
 import 'utils.dart';
 import 'widgets/image.dart';
 import 'widgets/image_resizer.dart';
-import 'widgets/video_app.dart';
-import 'widgets/youtube_video_app.dart';
 
 class ImageEmbedBuilder extends EmbedBuilder {
   @override
@@ -185,38 +183,38 @@ class ImageEmbedBuilderWeb extends EmbedBuilder {
   }
 }
 
-class VideoEmbedBuilder extends EmbedBuilder {
-  VideoEmbedBuilder({this.onVideoInit});
+// class VideoEmbedBuilder extends EmbedBuilder {
+//   VideoEmbedBuilder({this.onVideoInit});
 
-  final void Function(GlobalKey videoContainerKey)? onVideoInit;
+//   final void Function(GlobalKey videoContainerKey)? onVideoInit;
 
-  @override
-  String get key => BlockEmbed.videoType;
+//   @override
+//   String get key => BlockEmbed.videoType;
 
-  @override
-  Widget build(
-    BuildContext context,
-    QuillController controller,
-    base.Embed node,
-    bool readOnly,
-    bool inline,
-    TextStyle textStyle,
-  ) {
-    assert(!kIsWeb, 'Please provide video EmbedBuilder for Web');
+//   @override
+//   Widget build(
+//     BuildContext context,
+//     QuillController controller,
+//     base.Embed node,
+//     bool readOnly,
+//     bool inline,
+//     TextStyle textStyle,
+//   ) {
+//     assert(!kIsWeb, 'Please provide video EmbedBuilder for Web');
 
-    final videoUrl = node.value.data;
-    if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')) {
-      return YoutubeVideoApp(
-          videoUrl: videoUrl, context: context, readOnly: readOnly);
-    }
-    return VideoApp(
-      videoUrl: videoUrl,
-      context: context,
-      readOnly: readOnly,
-      onVideoInit: onVideoInit,
-    );
-  }
-}
+//     final videoUrl = node.value.data;
+//     if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')) {
+//       return YoutubeVideoApp(
+//           videoUrl: videoUrl, context: context, readOnly: readOnly);
+//     }
+//     return VideoApp(
+//       videoUrl: videoUrl,
+//       context: context,
+//       readOnly: readOnly,
+//       onVideoInit: onVideoInit,
+//     );
+//   }
+// }
 
 class FormulaEmbedBuilder extends EmbedBuilder {
   @override

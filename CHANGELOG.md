@@ -1,3 +1,15 @@
+# [7.2.11]
+- Add affinity for localPosition.
+
+# [7.2.10]
+- LINE._getPlainText queryChild inclusive=false.
+
+# [7.2.9]
+- Add toPlainText method to `EmbedBuilder`.
+
+# [7.2.8]
+- Add custom button widget in toolbar.
+
 # [7.2.7]
 - Fix language code of Japan.
 

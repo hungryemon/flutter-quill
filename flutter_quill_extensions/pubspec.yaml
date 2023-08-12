@@ -15,7 +15,7 @@ dependencies:
   flutter_quill:
     git:
       url: git@github.com:hungryemon/flutter-quill.git
-      ref: 4bd3bc325b3dea4cc0d2d9116436c86004bc2722
+      ref: b76b67da8a27173925f23af90a3f281501bf9ba1
 
   image_picker: ^0.8.5+3
   photo_view: ^0.14.0

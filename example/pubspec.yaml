@@ -31,6 +31,7 @@ dependencies:
   path_provider: ^2.0.9
   filesystem_picker: ^3.1.0
   file_picker: ^5.2.2
+  youtube_player_flutter: ^8.1.2
   flutter_quill:
     path: ../
   flutter_quill_extensions:

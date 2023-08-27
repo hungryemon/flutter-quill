@@ -16,13 +16,13 @@ dependencies:
   flutter_quill:
     git:
       url: git@github.com:hungryemon/flutter-quill.git
-      ref: b76b67da8a27173925f23af90a3f281501bf9ba1
+      ref: 1119f8b60f7c7df3fb93d2f0ec965823c7cbc36a
 
 
   image_picker: ">=0.8.5 <2.0.0"
   photo_view: ^0.14.0
   # video_player: ^2.4.2
-  # youtube_player_flutter: ^8.1.1
+  # youtube_player_flutter: ^8.1.2
 
   gallery_saver: ^2.3.2
   math_keyboard: ">=0.1.8 <0.3.0"

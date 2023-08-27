@@ -110,5 +110,4 @@ class VideoEmbedBuilderWeb extends EmbedBuilder {
 
 List<EmbedBuilder> get defaultEmbedBuildersWeb => [
       ImageEmbedBuilderWeb(),
-      VideoEmbedBuilderWeb(),
     ];

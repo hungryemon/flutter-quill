@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 // ignore: unnecessary_import
 import 'dart:typed_data';
 
@@ -13,7 +14,6 @@ import 'package:i18n_extension/i18n_widget.dart';
 import '../models/documents/document.dart';
 import '../models/documents/nodes/container.dart' as container_node;
 import '../models/documents/nodes/leaf.dart';
-import '../models/documents/style.dart';
 import '../models/structs/offset_value.dart';
 import '../models/themes/quill_dialog_theme.dart';
 import '../utils/platform.dart';
@@ -38,7 +38,7 @@ abstract class EditorState extends State<RawEditor>
 
   EditorTextSelectionOverlay? get selectionOverlay;
 
-  List<OffsetValue<Style>> get pasteStyle;
+  List<OffsetValue> get pasteStyleAndEmbed;
 
   String get pastePlainText;
 
@@ -191,6 +191,8 @@ class QuillEditor extends StatefulWidget {
     this.customLinkPrefixes = const <String>[],
     this.dialogTheme,
     this.contentInsertionConfiguration,
+    this.contextMenuBuilder,
+    this.editorKey,
     Key? key,
   }) : super(key: key);
 
@@ -199,6 +201,12 @@ class QuillEditor extends StatefulWidget {
     required bool readOnly,
     Brightness? keyboardAppearance,
     Iterable<EmbedBuilder>? embedBuilders,
+    EdgeInsetsGeometry padding = EdgeInsets.zero,
+    bool autoFocus = true,
+    bool expands = false,
+    FocusNode? focusNode,
+    String? placeholder,
+    GlobalKey<EditorState>? editorKey,
 
     /// The locale to use for the editor toolbar, defaults to system locale
     /// More at https://github.com/singerdmx/flutter-quill#translation
@@ -208,14 +216,16 @@ class QuillEditor extends StatefulWidget {
       controller: controller,
       scrollController: ScrollController(),
       scrollable: true,
-      focusNode: FocusNode(),
-      autoFocus: true,
+      focusNode: focusNode ?? FocusNode(),
+      autoFocus: autoFocus,
       readOnly: readOnly,
-      expands: false,
-      padding: EdgeInsets.zero,
+      expands: expands,
+      padding: padding,
       keyboardAppearance: keyboardAppearance ?? Brightness.light,
       locale: locale,
       embedBuilders: embedBuilders,
+      placeholder: placeholder,
+      editorKey: editorKey,
     );
   }
 
@@ -369,6 +379,7 @@ class QuillEditor extends StatefulWidget {
   // Returns whether gesture is handled
   final bool Function(LongPressMoveUpdateDetails details,
       TextPosition Function(Offset offset))? onSingleLongTapMoveUpdate;
+
   // Returns whether gesture is handled
   final bool Function(
           LongPressEndDetails details, TextPosition Function(Offset offset))?
@@ -431,11 +442,18 @@ class QuillEditor extends StatefulWidget {
   /// Configures the dialog theme.
   final QuillDialogTheme? dialogTheme;
 
+  // Allows for creating a custom context menu
+  final QuillEditorContextMenuBuilder? contextMenuBuilder;
+
   /// Configuration of handler for media content inserted via the system input
   /// method.
   ///
   /// See [https://api.flutter.dev/flutter/widgets/EditableText/contentInsertionConfiguration.html]
   final ContentInsertionConfiguration? contentInsertionConfiguration;
+
+  /// Using the editorKey for get getLocalRectForCaret
+  /// editorKey.currentState?.renderEditor.getLocalRectForCaret
+  final GlobalKey<EditorState>? editorKey;
 
   @override
   QuillEditorState createState() => QuillEditorState();
@@ -443,13 +461,14 @@ class QuillEditor extends StatefulWidget {
 
 class QuillEditorState extends State<QuillEditor>
     implements EditorTextSelectionGestureDetectorBuilderDelegate {
-  final GlobalKey<EditorState> _editorKey = GlobalKey<EditorState>();
+  late GlobalKey<EditorState> _editorKey;
   late EditorTextSelectionGestureDetectorBuilder
       _selectionGestureDetectorBuilder;
 
   @override
   void initState() {
     super.initState();
+    _editorKey = widget.editorKey ?? GlobalKey<EditorState>();
     _selectionGestureDetectorBuilder =
         _QuillEditorSelectionGestureDetectorBuilder(
             this, widget.detectWordBoundary);
@@ -477,8 +496,8 @@ class QuillEditorState extends State<QuillEditor>
       selectionColor = selectionTheme.selectionColor ??
           cupertinoTheme.primaryColor.withOpacity(0.40);
       cursorRadius ??= const Radius.circular(2);
-      cursorOffset =
-          Offset(iOSHorizontalOffset / View.of(context).devicePixelRatio, 0);
+      cursorOffset = Offset(
+          iOSHorizontalOffset / MediaQuery.of(context).devicePixelRatio, 0);
     } else {
       textSelectionControls = materialTextSelectionControls;
       paintCursorAboveText = false;
@@ -502,8 +521,9 @@ class QuillEditorState extends State<QuillEditor>
       readOnly: widget.readOnly,
       placeholder: widget.placeholder,
       onLaunchUrl: widget.onLaunchUrl,
-      contextMenuBuilder:
-          showSelectionToolbar ? RawEditor.defaultContextMenuBuilder : null,
+      contextMenuBuilder: showSelectionToolbar
+          ? (widget.contextMenuBuilder ?? RawEditor.defaultContextMenuBuilder)
+          : null,
       showSelectionHandles: isMobile(theme.platform),
       showCursor: widget.showCursor,
       cursorStyle: CursorStyle(
@@ -994,6 +1014,7 @@ class RenderEditor extends RenderEditableContainerBox
   }
 
   double? _maxContentWidth;
+
   set maxContentWidth(double? value) {
     if (_maxContentWidth == value) return;
     _maxContentWidth = value;

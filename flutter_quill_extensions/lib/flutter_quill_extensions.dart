@@ -25,7 +25,7 @@ class FlutterQuillEmbeds {
   }) =>
       [
         ImageEmbedBuilder(),
-        VideoEmbedBuilder(onVideoInit: onVideoInit),
+        // VideoEmbedBuilder(onVideoInit: onVideoInit),
         FormulaEmbedBuilder(),
       ];
 

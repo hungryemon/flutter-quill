@@ -16,7 +16,7 @@ dependencies:
   flutter_quill:
     git:
       url: git@github.com:hungryemon/flutter-quill.git
-      ref: 6e87df285bb6ed9a37572de22c129232b6403ced
+      ref: 7865ea5dba85683ba8f115cf3d9a13a0d8513f1c
 
 
   image_picker: ">=0.8.5 <2.0.0"
@@ -24,16 +24,16 @@ dependencies:
   # video_player: ^2.4.2
   # youtube_player_flutter: ^8.1.2
 
-  gallery_saver: ^2.3.2
+  gallery_saver_plus: ^3.0.1
   math_keyboard: ">=0.1.8 <0.3.0"
-  string_validator: ^1.0.0
-  universal_html: ^2.2.1
-  url_launcher: ^6.1.11
+  string_validator: ^1.0.2
+  universal_html: ^2.2.4
+  url_launcher: ^6.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.11.1
+  flutter_lints: ^3.0.1
 
 # The following section is specific to Flutter packages.
 flutter:

@@ -343,14 +343,12 @@ class RawEditorState extends EditorState
     widget.contentInsertionConfiguration?.onContentInserted.call(content);
   }
 
-  /// Returns the [ContextMenuButtonItem]s representing the buttons in this
-  /// platform's default selection menu for [RawEditor].
-  ///
+   /// Returns the [ContextMenuButtonItem]s representing the buttons in this
+  /// platform's default selection menu for [QuillRawEditor].
   /// Copied from [EditableTextState].
   List<ContextMenuButtonItem> get contextMenuButtonItems {
     return EditableText.getEditableButtonItems(
       clipboardStatus: _clipboardStatus.value,
-      onLiveTextInput: null,
       onCopy: copyEnabled
           ? () => copySelection(SelectionChangedCause.toolbar)
           : null,
@@ -361,9 +359,69 @@ class RawEditorState extends EditorState
       onSelectAll: selectAllEnabled
           ? () => selectAll(SelectionChangedCause.toolbar)
           : null,
+      onLookUp: lookUpEnabled
+          ? () => lookUpSelection(SelectionChangedCause.toolbar)
+          : null,
+      onSearchWeb: searchWebEnabled
+          ? () => searchWebForSelection(SelectionChangedCause.toolbar)
+          : null,
+      onShare: shareEnabled
+          ? () => shareSelection(SelectionChangedCause.toolbar)
+          : null,
+      onLiveTextInput: liveTextInputEnabled ? () {} : null,
     );
   }
 
+  /// Look up the current selection,
+  /// as in the "Look Up" edit menu button on iOS.
+  ///
+  /// Currently this is only implemented for iOS.
+  ///
+  /// Throws an error if the selection is empty or collapsed.
+  Future<void> lookUpSelection(SelectionChangedCause cause) async {
+    final text = textEditingValue.selection.textInside(textEditingValue.text);
+    if (text.isEmpty) {
+      return;
+    }
+    await SystemChannels.platform.invokeMethod(
+      'LookUp.invoke',
+      text,
+    );
+  }
+
+  /// Launch a web search on the current selection,
+  /// as in the "Search Web" edit menu button on iOS.
+  ///
+  /// Currently this is only implemented for iOS.
+  ///
+  /// When 'obscureText' is true or the selection is empty,
+  /// this function will not do anything
+  Future<void> searchWebForSelection(SelectionChangedCause cause) async {
+    final text = textEditingValue.selection.textInside(textEditingValue.text);
+    if (text.isNotEmpty) {
+      await SystemChannels.platform.invokeMethod(
+        'SearchWeb.invoke',
+        text,
+      );
+    }
+  }
+
+  /// Launch the share interface for the current selection,
+  /// as in the "Share" edit menu button on iOS.
+  ///
+  /// Currently this is only implemented for iOS.
+  ///
+  /// When 'obscureText' is true or the selection is empty,
+  /// this function will not do anything
+  Future<void> shareSelection(SelectionChangedCause cause) async {
+    final text = textEditingValue.selection.textInside(textEditingValue.text);
+    if (text.isNotEmpty) {
+      await SystemChannels.platform.invokeMethod(
+        'Share.invoke',
+        text,
+      );
+    }
+  }
   /// Returns the anchor points for the default context menu.
   ///
   /// Copied from [EditableTextState].
@@ -1748,9 +1806,19 @@ class RawEditorState extends EditorState
     }
   }
 
+  // TODO: Review those
+
   @override
-  // TODO: implement liveTextInputEnabled
   bool get liveTextInputEnabled => false;
+
+  @override
+  bool get lookUpEnabled => false;
+
+  @override
+  bool get searchWebEnabled => false;
+
+  @override
+  bool get shareEnabled => false;
 }
 
 class _Editor extends MultiChildRenderObjectWidget {

@@ -25,7 +25,10 @@ dependencies:
   # youtube_player_flutter: ^8.1.2
 
   gallery_saver: #^3.0.1
-   git: git@github.com:hungryemon/gallery_saver.git
+   git: 
+    url: git@github.com:hungryemon/gallery_saver.git
+    branch: emon
+    ref: 13f218e1badecae0361a46913ed0570d8a4d5494
   math_keyboard: ">=0.1.8 <0.3.0"
   string_validator: ^1.0.2
   universal_html: ^2.2.4

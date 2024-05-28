@@ -26,7 +26,11 @@ dependencies:
 
   gallery_saver: #^3.0.1
    git: git@github.com:hungryemon/gallery_saver.git
-  math_keyboard: ">=0.1.8 <0.3.0"
+  math_keyboard: 
+    git:
+      url: git@github.com:hungryemon/math_keyboard.git
+      path: math_keyboard
+      ref: 66973ed6bd2144f5a67d37c0442b0f838fbf5fa4
   string_validator: ^1.0.2
   universal_html: ^2.2.4
   url_launcher: ^6.2.2
